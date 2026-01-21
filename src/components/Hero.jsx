@@ -1,29 +1,35 @@
 import bgImage from "../assets/bg-image.avif";
 
-export default function Hero() {
+function Hero() {
   return (
     <section
-      className="min-h-screen flex items-center"
+      className="relative min-h-screen flex items-center"
       style={{
-        backgroundImage: `url(${bgImage})`,
+        backgroundImage: `linear-gradient(
+          rgba(0,0,0,0.55),
+          rgba(0,0,0,0.55)
+        ), url(${bgImage})`,
         backgroundSize: "cover",
         backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
-      <div className="bg-black/60 w-full min-h-screen flex items-center">
-        <div className="max-w-6xl mx-auto px-6 text-white">
-          <h1 className="text-4xl md:text-6xl font-bold mb-6">
-            Automate Your Business <br /> with AI
-          </h1>
-          <p className="text-lg md:text-xl mb-8">
-            We build AI-powered automation systems that save time, reduce cost,
-            and scale operations.
-          </p>
-          <button className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg">
-            Get Started
-          </button>
-        </div>
+      <div className="container mx-auto px-6 text-white">
+        <h1 className="text-4xl md:text-6xl font-bold max-w-2xl leading-tight">
+          Automate Your Business <br /> with AI
+        </h1>
+
+        <p className="mt-4 max-w-xl text-lg text-gray-200">
+          We build AI-powered automation systems that save time, reduce cost,
+          and scale operations.
+        </p>
+
+        <button className="mt-6 bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-lg font-medium transition">
+          Get Started
+        </button>
       </div>
     </section>
   );
 }
+
+export default Hero;
