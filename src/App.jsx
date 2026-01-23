@@ -7,11 +7,12 @@ import About from "./components/About";
 import Contact from "./components/Contact";
 import ContactForm from "./pages/ContactForm";
 import Chatbot from "./components/Chatbot";
+import Admin from "./pages/Admin";
 
 function App() {
   const location = useLocation();
 
-  const hideHeaderRoutes = ["/contact-form"];
+const hideHeaderRoutes = ["/contact-form", "/admin"];
 
   return (
     <>
@@ -32,6 +33,8 @@ function App() {
         />
 
         <Route path="/contact-form" element={<ContactForm />} />
+        <Route path="/admin" element={<Admin />} />
+        
       </Routes>
       <Chatbot/>
     </>

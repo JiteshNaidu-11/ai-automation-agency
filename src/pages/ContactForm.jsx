@@ -1,102 +1,223 @@
+// import { useState } from "react";
+// import { useNavigate } from "react-router-dom";
+
+// export default function ContactForm() {
+//   const navigate = useNavigate();
+
+//   const [form, setForm] = useState({
+//     name: "",
+//     email: "",
+//     message: "",
+//   });
+
+//   const [loading, setLoading] = useState(false);
+//   const [success, setSuccess] = useState("");
+
+//   const handleChange = (e) => {
+//     setForm({
+//       ...form,
+//       [e.target.name]: e.target.value,
+//     });
+//   };
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+//     setLoading(true);
+
+//     try {
+//       const response = await fetch("http://localhost:5000/submissions", {
+//         method: "POST",
+//         headers: {
+//           "Content-Type": "application/json",
+//         },
+//         body: JSON.stringify(form),
+//       });
+
+//       const data = await response.json();
+
+//       if (!response.ok) {
+//         throw new Error(data.error || "Submission failed");
+//       }
+
+//       setSuccess("✅ Form submitted successfully! Redirecting...");
+
+//       setTimeout(() => {
+//         navigate("/");
+//       }, 1500);
+//     } catch (err) {
+//       console.error(err);
+//       alert("❌ Submission failed. Please try again.");
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div className="min-h-screen flex items-center justify-center bg-gray-100">
+//       <div className="bg-white p-10 rounded-xl shadow-xl w-full max-w-md">
+//         <h2 className="text-2xl font-bold text-center mb-2">
+//           Let’s Get Started
+//         </h2>
+//         <p className="text-center text-gray-500 mb-6">
+//           Fill in your details and we’ll get back to you shortly.
+//         </p>
+
+//         {success ? (
+//           <p className="text-green-600 text-center font-semibold">
+//             {success}
+//           </p>
+//         ) : (
+//           <form onSubmit={handleSubmit} className="space-y-4">
+//             <input
+//               type="text"
+//               name="name"
+//               placeholder="Your Name"
+//               value={form.name}
+//               onChange={handleChange}
+//               required
+//               className="w-full border rounded px-4 py-3"
+//             />
+
+//             <input
+//               type="email"
+//               name="email"
+//               placeholder="Your Email"
+//               value={form.email}
+//               onChange={handleChange}
+//               required
+//               className="w-full border rounded px-4 py-3"
+//             />
+
+//             <textarea
+//               name="message"
+//               placeholder="Your Message"
+//               value={form.message}
+//               onChange={handleChange}
+//               required
+//               className="w-full border rounded px-4 py-3"
+//             />
+
+//             <button
+//               type="submit"
+//               disabled={loading}
+//               className="w-full bg-blue-600 text-white py-3 rounded font-semibold hover:bg-blue-700 disabled:opacity-60"
+//             >
+//               {loading ? "Submitting..." : "Submit"}
+//             </button>
+//           </form>
+//         )}
+//       </div>
+//     </div>
+//   );
+// }
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 
-function ContactForm() {
+export default function ContactForm() {
   const navigate = useNavigate();
 
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [form, setForm] = useState({
+    name: "",
+    email: "",
+    message: "",
+  });
 
-  const [submitted, setSubmitted] = useState(false);
-  const [redirecting, setRedirecting] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [success, setSuccess] = useState("");
 
-  const handleSubmit = (e) => {
+  const handleChange = (e) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
+    setSuccess("");
 
-    const userData = { name, email };
+    try {
+      const res = await fetch("http://localhost:5000/submissions", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
 
-    const existing =
-      JSON.parse(localStorage.getItem("contactLeads")) || [];
+      const data = await res.json();
 
-    existing.push(userData);
-    localStorage.setItem("contactLeads", JSON.stringify(existing));
+      // ✅ Proper error handling
+      if (!res.ok) {
+        throw new Error(data.error || "Submission failed");
+      }
 
-    setSubmitted(true);
+      setSuccess("✅ Form submitted successfully! Redirecting...");
 
-    setTimeout(() => {
-      setRedirecting(true);
-    }, 2000);
+      // Optional reset (safe)
+      setForm({ name: "", email: "", message: "" });
 
-    setTimeout(() => {
-      navigate("/");
-    }, 3000);
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
+
+    } catch (err) {
+      console.error("Submission Error:", err.message);
+      alert(`❌ ${err.message}`);
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-50 to-gray-100 px-4">
-      <div className="w-full max-w-lg bg-white rounded-2xl shadow-xl p-8 text-center">
+    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+      <div className="bg-white p-8 rounded-xl shadow-lg w-full max-w-md">
+        <h2 className="text-2xl font-bold text-center mb-2">Let’s Get Started</h2>
+        <p className="text-center text-gray-500 mb-4">
+          Fill in your details and we’ll get back to you shortly.
+        </p>
 
-        {!submitted && (
-          <>
-            <h2 className="text-3xl font-bold text-gray-900">
-              Let’s Get Started
-            </h2>
-
-            <p className="text-gray-600 mt-2 mb-8">
-              Fill in your details and we’ll get back to you shortly.
-            </p>
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <input
-                type="text"
-                placeholder="Your Name"
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                required
-                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-600"
-              />
-
-              <input
-                type="email"
-                placeholder="Email Address"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-                className="w-full px-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-600"
-              />
-
-              <button
-                type="submit"
-                className="w-full bg-blue-600 text-white py-3 rounded-lg font-semibold text-lg hover:bg-blue-700 transition"
-              >
-                Submit
-              </button>
-            </form>
-          </>
+        {success && (
+          <p className="text-green-600 text-center font-semibold mb-4">
+            {success}
+          </p>
         )}
 
-        {submitted && (
-          <div className="py-12">
-            <div className="text-green-600 text-4xl mb-4">✔</div>
-            <h3 className="text-2xl font-semibold text-gray-900">
-              Form Submitted Successfully
-            </h3>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <input
+            type="text"
+            name="name"
+            placeholder="Your Name"
+            value={form.name}
+            onChange={handleChange}
+            required
+            className="w-full border p-2 rounded"
+          />
 
-            <p className="text-gray-600 mt-3">
-              Thank you! We’ll get back to you shortly.
-            </p>
+          <input
+            type="email"
+            name="email"
+            placeholder="Your Email"
+            value={form.email}
+            onChange={handleChange}
+            required
+            className="w-full border p-2 rounded"
+          />
 
-            {redirecting && (
-              <p className="mt-6 text-blue-600 font-medium animate-pulse">
-                Redirecting to home page...
-              </p>
-            )}
-          </div>
-        )}
+          <textarea
+            name="message"
+            placeholder="Your Message"
+            value={form.message}
+            onChange={handleChange}
+            required
+            className="w-full border p-2 rounded"
+          />
 
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-blue-600 text-white py-2 rounded"
+          >
+            {loading ? "Submitting..." : "Submit"}
+          </button>
+        </form>
       </div>
     </div>
   );
 }
-
-export default ContactForm;

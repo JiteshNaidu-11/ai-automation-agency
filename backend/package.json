@@ -1,6 +1,7 @@
 {
   "name": "genie-backend",
   "version": "1.0.0",
+  "type": "module",
   "description": "Backend for Genie AI Chatbot",
   "main": "server.js",
   "scripts": {
@@ -10,6 +11,7 @@
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
+    "mongoose": "^8.21.0",
     "openai": "^4.0.0"
   }
 }
